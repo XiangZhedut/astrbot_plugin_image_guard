@@ -1,0 +1,21 @@
+name: astrbot_plugin_image_guard
+display_name: 图片历史管理器
+desc: 按群聊和日期管理图片历史，整理相似图片、上下文引用与禁发规则；默认隔离跨群图片发送，联动表情包黑名单。
+version: 2.3.0
+author: XiangZhedut
+repo: https://github.com/XiangZhedut/astrbot_plugin_image_guard
+astrbot_version: ">=4.29.3,<5"
+support_platforms:
+  - qq_official
+  - qq_official_webhook
+  - aiocqhttp
+tags:
+  - 图片
+  - 隐私保护
+  - 黑名单
+  - 相册
+  - 图片管理
+  - 群聊隔离
+pages:
+  - name: gallery
+    title: 图片历史管理

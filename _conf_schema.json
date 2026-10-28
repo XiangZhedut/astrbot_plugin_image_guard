@@ -1,0 +1,14 @@
+{
+  "enabled": {"description": "启用图片禁发", "type": "bool", "default": true},
+  "collect_memes": {"description": "收纳表情包", "type": "bool", "default": false, "hint": "关闭时，被平台表情标记、商城 CDN 或本机表情包小偷已入库记录识别的表情不再自动保存相册副本，并从普通相册/相似整理中隐藏。已有图片不删除；可在“表情包”分类查看和手动纠正。禁发、跨群隔离所需的最小指纹与来源仍保留。QQ 官方接口未标记的自制表情可能漏判，不调用视觉 API，不仅凭尺寸或 GIF 格式判定。"},
+  "group_isolation": {"description": "跨群/跨会话图片隔离", "type": "bool", "default": true, "hint": "图片仅能发送到实际接收过此图的群聊或私聊。未知来源、无法确认接收目标时拒发；也会拦截尚无接收记录的公共表情和生成图片。群聊筛选、相册展示或 AI 引用不授予转发权限。依赖 AstrBot 标准发送入口，不控制成员手动发图或插件绕开框架直连平台 API。"},
+  "history_enabled": {"description": "收集图片历史", "type": "bool", "default": true, "hint": "自动扫描本机聊天历史与临时图片，并为新收到的图片保存独立副本。只保存在本机，不调用视觉模型。关闭后若跨群隔离仍开启，会继续记录来源与指纹，不另存新图片副本。"},
+  "history_storage_mb": {"description": "图片副本容量上限（MiB）", "type": "int", "default": 512, "hint": "达到上限暂停新增副本，不自动删除旧图；可以在相册中清理。回收站另计，需按实际磁盘空间管理。", "slider": {"min": 64, "max": 8192, "step": 64}},
+  "history_scan_limit": {"description": "单次扫描临时文件数量上限", "type": "int", "default": 5000},
+  "sync_stealer_blacklist": {"description": "同步表情包小偷黑名单", "type": "bool", "default": true, "hint": "只读 astrbot_plugin_stealer 的黑名单，不修改它的数据库。"},
+  "protect_format_variants": {"description": "阻止转格式、压缩与缩放绕过禁发", "type": "bool", "default": true, "hint": "使用整图比例、边缘与颜色指纹比较转码版本，不需要模型或 API。可能误拦高度相似图片；大幅裁剪、拼图和后续动图帧不保证识别。旧规则会尝试从本地原图补全指纹。"},
+  "similarity_distance": {"description": "相似图拦截距离", "type": "int", "default": -1, "hint": "-1 关闭相似匹配，仅比较文件和像素指纹；0~4 允许 dHash 差异位数。越大越可能误拦，建议先从 0 或 1 测试。裁剪/加字不保证拦截。", "slider": {"min": -1, "max": 4, "step": 1}},
+  "max_image_mb": {"description": "单图检查大小上限（MiB）", "type": "int", "default": 16, "slider": {"min": 1, "max": 32, "step": 1}},
+  "fail_closed": {"description": "检查失败时禁止发送该图片", "type": "bool", "default": true, "hint": "开启时，无法读取、超限、损坏图片和非公开网络图片地址会被阻止；纯文字、语音不受影响。"},
+  "block_notice": {"description": "拦截提示", "type": "string", "default": "这张图片受禁发或会话隔离规则保护，不能发送。本次请求已终止，请勿重复尝试或通过重新上传、改格式、换群等方式重试。", "hint": "本轮拦截后固定反馈，不引导用户重试；不要自定义为重发、上传或换格式的建议。留空静默拦截。工具返回不可重试的终止结果；本轮后续回复替换为提示，每个接收会话至多反馈一次。"}
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>图片历史管理</title><link rel="stylesheet" href="./style.css">
+<script src="/api/plugin/page/bridge-sdk.js"></script></head>
+<body>
+<aside class="sidebar">
+  <div class="brand"><span class="brand-icon">▧</span><div>拾光相册<small>图片历史管理器</small></div></div>
+  <p class="nav-label">我的图片</p>
+  <nav aria-label="图片分类">
+    <button class="nav active" data-mode="all">▦　全部图片 <span id="count-all">0</span></button>
+    <button class="nav" data-mode="context">◷　上下文图片</button>
+    <button class="nav" data-mode="similar">▥　相似图片整理</button>
+    <button class="nav" data-mode="memes">☺　表情包 <span id="count-memes">0</span></button>
+    <button class="nav" data-mode="kept">♡　已保留 <span id="count-kept">0</span></button>
+    <button class="nav" data-mode="blocked">⊘　已禁发 <span id="count-blocked">0</span></button>
+    <button class="nav" data-mode="trash">♲　回收站 <span id="count-trash">0</span></button>
+  </nav>
+  <div class="sidebar-foot"><span id="guard-dot" class="dot"></span><span id="guard-status">正在连接</span><p id="scope-status"></p><p id="storage-status"></p><p>仅在已登录的管理面板中预览<br>图片与管理记录保存在本机</p></div>
+</aside>
+<main>
+  <header><div><p class="eyebrow">IMAGE HISTORY</p><h1 id="heading">全部图片</h1><p id="summary" class="muted">正在读取你的图片历史…</p></div><button id="scan" class="primary">↻ 扫描历史</button></header>
+  <div class="toolbar"><label class="search"><span>⌕</span><input id="search" type="search" placeholder="搜索文件名或图片编号" aria-label="搜索图片"></label><input id="day" type="date" aria-label="筛选日期"><button id="reset">重置筛选</button><button id="select-page">选择本页</button></div>
+  <div class="group-toolbar"><label for="group">来源群聊</label><select id="group" aria-label="按群聊筛选"><option value="">全部群聊与未关联图片</option><option value="unknown">未关联群聊（含私聊、临时文件）</option></select><button id="rename-group" disabled>备注群名</button><button id="clear-similar" hidden>退出相似图查看</button></div>
+  <div class="collection-control"><label><input id="collect-memes" type="checkbox"> 收纳表情包</label><span id="collection-note">关闭后普通相册隐藏表情包，不新增其图片副本；禁发与跨群隔离仍生效。</span></div>
+  <div id="view-notice" class="view-notice" hidden></div>
+  <div class="notice"><b>管理图片，不打断聊天。</b>“禁发”阻止机器人重发；“保留”保存独立副本；“移除上下文”只清理图片引用，文字描述仍会保留。临时图片按文件日期分组。</div>
+  <div id="selection" class="selection" hidden><strong id="selected-count">已选 0 张</strong><div class="selection-actions"><button data-action="keep">保留</button><button data-action="ban">禁发</button><button data-action="unban">解除独立禁发</button><button data-action="mark_meme">标为表情包</button><button data-action="mark_photo">当作普通图片</button><button data-action="detach">移除上下文</button><button data-action="trash" class="danger">移入回收站</button><button data-action="restore" hidden>恢复</button><button data-action="purge" class="danger" hidden>彻底删除</button><button id="clear-selection">取消选择</button></div></div>
+  <div id="scan-status" class="scan-status" role="status"></div>
+  <div id="gallery" aria-live="polite"></div>
+  <footer class="pagination"><button id="prev">← 上一页</button><span id="page-label">第 1 页</span><button id="next">下一页 →</button></footer>
+</main>
+<dialog id="viewer" aria-labelledby="viewer-title"><div class="dialog-head"><h2 id="viewer-title">图片详情</h2><button id="close-viewer" aria-label="关闭详情">✕</button></div><div class="viewer-body"><div class="preview-stage"><img id="large-image" alt="所选图片预览"><p id="preview-error" hidden></p></div><div class="details"><div id="detail-info"></div><div id="detail-actions" class="detail-actions"></div><h3>上下文记录</h3><div id="context-links" class="muted"></div><p class="hint">禁发对管理员同样生效。恢复图片不会自动解除禁发；其他插件的黑名单需在原插件解除。</p></div></div></dialog>
+<dialog id="confirm" aria-labelledby="confirm-title"><div class="dialog-head"><h2 id="confirm-title">确认操作</h2></div><p id="confirm-description"></p><div id="delete-options"><label><input id="detach-option" type="checkbox" checked> 同时移除聊天上下文中的图片引用</label><label><input id="ban-option" type="checkbox" checked> 同时禁止机器人再次发送</label></div><label id="purge-label" hidden>请输入“彻底删除”确认：<input id="purge-confirm" autocomplete="off" aria-label="永久删除确认文字"></label><p class="hint">仅处理临时目录和本插件图片库内的匹配文件，其他插件和外部目录的文件不会移动。已保留的图片需先取消保留。回收站不自动清空。</p><div class="dialog-buttons"><button id="cancel-action">取消</button><button id="confirm-action" class="danger solid">确认操作</button></div></dialog>
+<div id="toast" role="status" hidden></div>
+<dialog id="group-dialog"><div class="dialog-head"><h2>备注群聊名称</h2></div><p class="hint">只修改本相册里的显示名称。QQ 官方适配器可能只提供群 OpenID。</p><input id="group-name" maxlength="100" aria-label="群聊备注名称"><div class="dialog-buttons"><button id="cancel-group">取消</button><button id="save-group" class="primary">保存备注</button></div></dialog>
+<script type="module" src="./app.js"></script>
+</body></html>
